@@ -1,6 +1,12 @@
 import speech_recognition as sr
 import pyautogui
 import threading
+# from transformers import pipeline
+from deepmultilingualpunctuation import PunctuationModel
+
+# punctuator = pipeline("text-classification", model="textattack/bert-base-uncased-SST-2", tokenizer="bert-base-uncased")
+model = PunctuationModel()
+
 
 r = sr.Recognizer()
 
@@ -21,7 +27,9 @@ def listen():
                 print(f"Could not request results; {e}")
 
 def type_text(text):
-    pyautogui.typewrite(text,0.1)
+    # punctuated_text = punctuator(text)
+    punctuated_text = model.restore_punctuation(text)
+    pyautogui.typewrite(punctuated_text,0.1)
 
 t1 = threading.Thread(target=listen)
 t1.start()
